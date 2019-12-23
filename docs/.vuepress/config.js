@@ -3,6 +3,9 @@ module.exports = {
   title: 'KF博客',
   description: '记录开发中遇到的问题',
   serviceWorker: false,
+  head: [
+    ['link', { rel: 'icon', href: '/logo.png' }]
+  ],
   themeConfig: {
     repo: 'gaokaifeis/blog',
     editLinks: true,
