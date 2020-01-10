@@ -20,6 +20,10 @@ module.exports = {
       {
         text: 'react',
         link: '/react/index/'
+      },
+      {
+        text: 'python',
+        link: '/python/index/'
       }
     ],
     sidebar: {
@@ -38,6 +42,22 @@ module.exports = {
           collapsable: false,
           children: [
             ['index/', 'Introduction']
+          ]
+        },
+      ],
+      '/python/': [
+        {
+          title: '基础学习',
+          collapsable: false,
+          children: [
+            ['base/index/', 'Introduction']
+          ]
+        },
+        {
+          title: 'flask',
+          collapsable: false,
+          children: [
+            ['flask/index/', 'Introduction']
           ]
         },
       ]
