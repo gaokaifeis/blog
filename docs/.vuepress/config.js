@@ -13,54 +13,68 @@ module.exports = {
     editLinkText: '在 GitHub 上编辑此页',
     lastUpdated: '上次更新',
     nav: [
+      // {
+      //   text: 'vue',
+      //   link: '/vue/index/'
+      // },
+      // {
+      //   text: 'react',
+      //   link: '/react/index/'
+      // },
+      // {
+      //   text: 'python',
+      //   link: '/python/index/'
+      // },
       {
-        text: 'vue',
-        link: '/vue/index/'
-      },
-      {
-        text: 'react',
-        link: '/react/index/'
-      },
-      {
-        text: 'python',
-        link: '/python/index/'
+        text: 'nodejs',
+        link: '/nodejs/index/'
       }
     ],
     sidebar: {
-      '/vue/': [
+      // '/vue/': [
+      //   {
+      //     title: '初始化',
+      //     collapsable: false,
+      //     children: [
+      //       ['index/', 'Introduction']
+      //     ]
+      //   },
+      // ],
+      // '/react/': [
+      //   {
+      //     title: '初始化',
+      //     collapsable: false,
+      //     children: [
+      //       ['index/', '简介']
+      //     ]
+      //   },
+      // ],
+      // '/python/': [
+      //   {
+      //     title: '基础学习',
+      //     collapsable: false,
+      //     children: [
+      //       ['base/index/', 'Introduction']
+      //     ]
+      //   },
+      //   {
+      //     title: 'flask',
+      //     collapsable: false,
+      //     children: [
+      //       ['flask/index/', 'Introduction']
+      //     ]
+      //   },
+      // ],
+      '/nodejs/': [
         {
-          title: '初始化',
+          title: 'mongoose',
           collapsable: false,
           children: [
-            ['index/', 'Introduction']
+            ['mongoose/', '简介'],
+            'mongoose/second'
           ]
-        },
+        }
       ],
-      '/react/': [
-        {
-          title: '初始化',
-          collapsable: false,
-          children: [
-            ['index/', 'Introduction']
-          ]
-        },
-      ],
-      '/python/': [
-        {
-          title: '基础学习',
-          collapsable: false,
-          children: [
-            ['base/index/', 'Introduction']
-          ]
-        },
-        {
-          title: 'flask',
-          collapsable: false,
-          children: [
-            ['flask/index/', 'Introduction']
-          ]
-        },
-      ]
     }
   }
 }
