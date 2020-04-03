@@ -1,8 +1,18 @@
+const path = require('path')
+console.log(path.join(__dirname, '../static/asserts'))
 module.exports = {
   base: '/blog/',
-  title: 'KF博客',
+  title: 'gaokf',
   description: '记录开发中遇到的问题',
   serviceWorker: false,
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@image': path.join(__dirname, 'asserts')
+      }
+    }
+  },
+  theme: 'reco',
   head: [
     ['link', { rel: 'icon', href: '/logo.png' }]
   ],

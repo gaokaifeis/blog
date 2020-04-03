@@ -1,5 +1,7 @@
 # Mongoose框架使用
 
+[[toc]]
+
 ## 快速上手
 首先需要先安装 [MongoDB](https://www.mongodb.com/) 和 [nodejs](https://nodejs.org/en/)
 
