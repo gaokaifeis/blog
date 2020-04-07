@@ -35,9 +35,17 @@ module.exports = {
       //   text: 'python',
       //   link: '/python/index/'
       // },
+      // {
+      //   text: 'nodejs',
+      //   link: '/nodejs/index/'
+      // },
       {
-        text: 'nodejs',
-        link: '/nodejs/index/'
+        text: '基础',
+        // link: '/nodejs/index/'
+        items: [
+          { text: 'HTTP 协议', link: '/http/index/' },
+          // { text: 'mongoose', link: '/http/index/' }
+        ]
       }
     ],
     sidebar: {
@@ -82,6 +90,16 @@ module.exports = {
           children: [
             ['mongoose/', '简介'],
             'mongoose/second'
+          ]
+        }
+      ],
+      '/http/': [
+        {
+          title: 'HTTP协议',
+          collapsable: false,
+          children: [
+            ['', '简介'],
+            'HTTP协议基础及发展历史'
           ]
         }
       ],
