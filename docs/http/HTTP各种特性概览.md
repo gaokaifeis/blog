@@ -188,6 +188,8 @@ session和cookie是不同的，但是会在使用session的时候使用cookie
 
 ## HTTP长连接
 
+Connection: keep-alive
+
 ## 数据协商
 
 ## Redirect
