@@ -184,13 +184,90 @@ cookie是有存在时效的，当没有设置过期时间的话，浏览器关�
 
 ### session
 
-session和cookie是不同的，但是会在使用session的时候使用cookie
+session 有很多种实现方法，在网站当中最经常用的是使用 Cookie 来保存 session
 
 ## HTTP长连接
 
-Connection: keep-alive
+当设置`Connection: keep-alive`时，chrome最多发起6个TCP连接，当超过次连接数时就会一直等待其他TCP连接空闲出来才能请求。
+
+当设置`Connection: close`时,浏览器请求完成后就会关闭TCP连接，因此所有的请求都会创建新的连接。
 
 ## 数据协商
+
+客户端发送请求给服务端，客户端会声明请求希望拿到的数据的格式和限制，服务端会根据请求头信息，来决定返回的数据
+
+### 分类
+  1. 客户端 请求 Accept
+      * Accept 声明想要的数据类型
+      * Accept-Encoding 数据以哪种编码方式进行传输，限制服务器如何进行数据压缩
+      * Accept-Language 展示语言
+      * User-Agent 浏览器相关信息，移动端，pc端的浏览器的User-Agent的不同
+
+  2. 服务端 返回 Content
+      * Content-Type 对应 Accept，从Accept中选择数据类型返回
+      * Content-Encoding 对应 Accept-Encoding，声明服务端数据压缩方式
+      * Content-Language 对应 Accept-Language，是否根据请求返回语言
+
+### 浏览器请求 html 时的头信息
+
+```js
+// server.js
+const http = require('http')
+const fs = require('fs')
+
+http.createServer(function (request, response) {
+  console.log('request come', request.url)
+
+  const html = fs.readFileSync('test.html')
+  response.writeHead(200, {
+    'Content-Type': 'text/html'
+  })
+  response.end(html)
+}).listen(8888)
+```
+
+查看 network 的 localhost 文件的请求信息，浏览器会自动加上这些头信息
+
+```
+Response Headers
+
+Connection: keep-alive
+Content-Type: text/html
+Date: Fri, 10 Apr 2020 01:32:43 GMT
+Transfer-Encoding: chunked
+
+Request Headers
+
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9
+Cache-Control: max-age=0
+Connection: keep-alive
+Cookie: 
+Host: localhost:8888
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36
+```
+
+:::tip
+`Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8`: 浏览器可以接收这些格式的数据，可以进行设置
+
+`Accept-Encoding: gzip, deflate, br`: 数据编码方式，gzip 使用最多；br 使用比较少，但压缩比高
+
+`Accept-Language: zh-CN,zh;q=0.9`: 浏览器会判断本系统的语言，自动加上。q 代表权重，数值越大权重越大，优先级越高
+
+`User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36`:
+
+* Mozilla/5.0 浏览器最早是网景公司出的，当时默认头是 Mozilla/5.0，很多老的 http 服务器只支持这个头，所以加上兼容老的 web 服务器
+
+* AppleWebKit/537.36 浏览器内核 ，chrome 和 safari 等现代浏览器大部分使用 webkit 内核，webkit 内核是苹果公司开发的
+
+* KHTML 渲染引擎版本，类似于 Gecko，火狐浏览器渲染引擎
+
+* Chrome/80.0.3987.163 chrome 版本号
+
+* Safari/537.36 因为使用了 webkit 内核，所以会加上
+:::
 
 ## Redirect
 
