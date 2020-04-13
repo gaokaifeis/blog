@@ -269,6 +269,127 @@ User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 * Safari/537.36 因为使用了 webkit 内核，所以会加上
 :::
 
+### Accept-Encoding
+
+数据压缩
+
+请求文件大小 933B，使用 gzip 压缩后是 609B
+
+```js
+// server.js
+const http = require('http')
+const fs = require('fs')
+const zlib = require('zlib') // 引入包
+
+http.createServer(function (request, response) {
+  console.log('request come', request.url)
+
+  const html = fs.readFileSync('test.html') // 这里不加 utf8，加了返回的就是字符串格式了
+  response.writeHead(200, {
+    'Content-Type': 'text/html',
+    // 'X-Content-Options': 'nosniff'
+    'Content-Encoding': 'gzip'
+  })
+  response.end(zlib.gzipSync(html)) // 压缩
+}).listen(8888)
+
+console.log('server listening on 8888')
+```
+
+请求文件响应头
+
+```
+Connection: keep-alive
+Content-Encoding: gzip // 返回的压缩算法方式
+Content-Type: text/html
+Date: Fri, 21 Sep 2018 02:58:54 GMT
+Transfer-Encoding: chunked
+```
+
+### Content-type
+
+用来协商客户端和服务端的数据格式和声明
+
+发送请求时，会有不同的请求内容，根据内容不同设置不同的 content-type
+
+chorme浏览器设置，勾选 Preserve log，当页面跳转后，也会把之前的请求打印出来
+
+发送表单数据
+
+```html
+<body>
+  <form action="/form" method="POST" id="form" enctype="application/x-www-form-urlencoded">
+    <input type="text" name="name">
+    <input type="password" name="password">
+    <input type="submit">
+  </form>
+</body>
+</html>
+```
+
+```
+Request Headers
+Content-Type: application/x-www-form-urlencoded // content-type 就是 form表单中设置的
+
+Form Data
+name=sf&password=sfs
+```
+
+服务端根据 content-type 是 x-www-form-urlencoded来对body 中的数据进行转化即可
+
+如果表单数据中有文件
+
+```html
+<body>
+  <form action="/form" method="POST" id="form" enctype="multipart/form-data">
+    <input type="text" name="name">
+    <input type="password" name="password">
+    <input type="file" name="file">
+    <input type="submit">
+  </form>
+  <script>
+    var form = document.getElementById('form')
+    form.addEventListener('submit', function (e) {
+      e.preventDefault()
+      var formData = new FormData(form)
+      fetch('/form', {
+        method: 'POST',
+        body: formData
+      })
+    })
+  </script>
+</body>
+```
+
+`multipart/form-data`代表请求是有多个部分的，有时通过表单上传文件时，必须要把文件部分单独拆分出来，文件不能作为字符串进行传输的，要作为二进制的数据进行传输；使用 x-www-form-urlencoded 这种拼接字符串的方式 是不对的
+
+```
+Request Headers
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary39Ug3FSPIBvDYZd6
+
+Request Payload
+------WebKitFormBoundary39Ug3FSPIBvDYZd6
+Content-Disposition: form-data; name="name"
+
+sdfs
+------WebKitFormBoundary39Ug3FSPIBvDYZd6
+Content-Disposition: form-data; name="password"
+
+sdfs
+------WebKitFormBoundary39Ug3FSPIBvDYZd6
+Content-Disposition: form-data; name="file"; filename="1536973449110.png"
+Content-Type: image/png
+
+
+------WebKitFormBoundary39Ug3FSPIBvDYZd6--
+```
+
+`boundary=----WebKitFormBoundary39Ug3FSPIBvDYZd6`用来分割表单提交数据的各个部分
+
+服务端拿到表单数据后，根据这个分割字符串，进行数据分割
+
 ## Redirect
+
+
 
 ## CSP
