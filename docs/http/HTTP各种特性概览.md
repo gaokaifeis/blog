@@ -390,6 +390,265 @@ Content-Type: image/png
 
 ## Redirect
 
+通过 url 访问某个路径请求资源时，发现资源不在 url 所指定的位置，这时服务器要告诉浏览器，新的资源地址，浏览器再重新请求新的 url，从而拿到资源。
+
+若服务器指定了某个资源的地址，现在需要更换地址，不应该立刻废弃掉 url，如果废弃掉可能直接返回 404，这时应该告诉客户端新的资源地址。
+
+### Redirect 的使用
+
+```js
+// server.js
+const http = require('http')
+
+http.createServer(function (request, response) {
+  console.log('request come', request.url)
+
+  if (request.url === '/') {
+    response.writeHead(302, {  // or 301
+      'Location': '/new' // 这里是同域跳转，只需要写路由
+    })
+    response.end()
+  }
+  if (request.url === '/new') {
+    response.writeHead(200, {
+      'Content-Type': 'text/html',
+    })
+    response.end('<div>this is content</div>')
+  }
+}).listen(8888)
+
+console.log('server listening on 8888')
+```
+
+查看network localhost
+
+请求发现是302后，浏览器自动根据响应头中的 Location 路径进行跳转
+
+```js
+General
+Status Code: 302 Found (from disk cache)
+
+Request Headers
+Location: /new
+```
+
+### Redirect 301 和 302 的区别
+
+302 临时跳转，每次请求仍然需要经过服务端指定跳转地址
+
+301 永久跳转
+
+302的情况
+
+每次访问 locahost:8888，都要经过服务端跳转，服务端通过 console.log 可以看到 / /new 两次请求
+
+```js
+const http = require('http')
+
+http.createServer(function (request, response) {
+  console.log('request come', request.url)
+
+  if (request.url === '/') {
+    response.writeHead(302, {  
+      'Location': '/new' 
+    })
+    response.end()
+  }
+  if (request.url === '/new') {
+    response.writeHead(200, {
+      'Content-Type': 'text/html',
+    })
+    response.end('<div>this is content</div>')
+  }
+}).listen(8888)
+
+console.log('server listening on 8888')
+```
+
+301 的情况
+
+访问 locahost:8888，第一次经过服务端跳转，服务端通过 console.log 可以看到 / /new 两次请求；第二次 服务端 console.log 只显示 /new ，没有再次经过服务器指定新的 Location
+
+```js
+response.writeHead(301, {
+  'Location': '/new'
+})
+```
+
+:::tip 注意
+使用 301 要慎重，一旦使用，服务端更改路由设置，用户如果不清理浏览器缓存，就会一直重定向。
+:::
+
+设置了 301，locahost 会从缓存中读取，并且这个缓存会保留到浏览器，当我们访问 8888 都会进行跳转。此时，就算服务端改变设置也是没有用的，浏览器还是会从缓存中读取。
 
 
-## CSP
+## CSP （Content-Security-Policy）
+
+* 作用
+  1. 限制资源获取
+  2. 报告资源获取越权
+* 限制方式
+  1. default-scr限制全局
+  2. 指定资源类型
+* 资源类型
+  1. connect-src
+  2. img-src
+  3. mainfest-src
+  4. font-src
+  5. style-src
+  6. media-src
+  7. frame-src
+  8. script-src
+
+### 限制内联脚本
+
+server
+
+```js
+const http = require('http')
+const fs = require('fs')
+http.createServer(function(request, response) {
+    console.log('request come', request.url)
+    const html = fs.readFileSync('test.html')
+    response.writeHead(200, {
+        'Content-Type': 'text/html',
+        'Content-Security-Policy': 'default-src http: https:'
+    })
+     response.end(html)
+}).listen(8888)
+console.log('server listening on 8888')
+```
+
+html
+
+```html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div>This is content</div>
+<script>
+  console.log('inline js')
+</script>
+</body>
+</html>
+```
+
+然后启动服务去访问，会出现如下报错
+
+`Refused to execute inline script because it violates the following Content Security Policy directive: "default-src http: https:". Either the 'unsafe-inline' keyword, a hash ('sha256-KU4m2rqHAFwi569te1RE5P3qW1O/qJ+m+gVo66Frm4k='), or a nonce ('nonce-...') is required to enable inline execution. Note also that 'script-src' was not explicitly set, so 'default-src' is used as a fallback.`
+
+###　限制外链加载 script
+
+限制外链接在 的 script 通过哪些域名进行加载．如，限制只能通过本域名进行加载 外链 script
+
+```js
+// server.js
+'Content-Security-Policy': 'script-src \'self\'' // 限制外链 script 只能是本域名下的
+```
+
+```html
+// test.html
+<script src="test.js"></script>  本域名下的可以使用
+<script src="https://cdn.bootcss.com/jquery/3.3.1/core.js"></script>
+```
+
+8888端口访问，可以看到报错信息
+
+`Refused to load the script 'https://cdn.bootcss.com/jquery/3.3.1/core.js' because it violates the following Content Security Policy directive: "script-src 'self'".`
+
+查看 network，发现在浏览器端就被 block掉了，没有发送请求。
+
+![CSPblock](~@image/cspblock.png)
+
+### 限制指定某个网站
+
+```js
+'Content-Security-Policy': 'script-src \'self\' https://cdn.bootcss.com' // 限制外链 script 只能是本域名下的，允许指定域名script加载
+```
+
+这样就没有报错信息了，network 看到 core.js加载成功
+
+### 限制 form 表单提交范围
+
+form 不接受 default-src 的限制，可以通过 form-action来限制。
+
+下例中 form 会调转到 [baidu.com](https://www.baidu.com/)，通过 form-action限制浏览器会报错。
+
+```js
+// server.js
+'Content-Security-Policy': 'script-src \'self\'; form-action \'self\'' // 限制表单提交只能在本域下
+```
+
+```html
+// test.html
+<form action="http://baidu.com">
+  <button type="submit">click me</button>
+</form>
+```
+
+报错信息
+
+`Refused to send form data to 'http://baidu.com/' because it violates the following Content Security Policy directive: "form-action 'self'".`
+
+### 限制图片链接
+
+通过全局限制 default-src 就可以实现
+
+```js
+'Content-Security-Policy': 'default-src \'self\'; form-action \'self\'' 
+```
+
+### 限制 ajax 请求
+
+通过 connect-src
+
+```js
+'Content-Security-Policy': 'connect-src \'self\'; form-action \'self\'; report-uri / report' 
+```
+
+```html
+<script> 
+  fetch('http://baidu.com')
+</script>
+```
+
+报错信息
+
+`Refused to connect to 'http://baidu.com/' because it violates the following Content Security Policy directive: "connect-src 'self'".`
+
+### 汇报
+
+```js
+// server.js
+'Content-Security-Policy': 'default-src \'self\'; form-action \'self\'; report-uri / report' 
+```
+
+network查看，发送的内容，是 标准的 csp report 的内容。
+
+![CSPreport](~@image/cspreport.png)
+
+### 允许加载但汇报
+
+使用 ‘Content-Security-Policy-Report-Only’
+
+```js
+// server.js
+'Content-Security-Policy-Report-Only': 'default-src \'self\'; form-action \'self\'; report-uri / report' 
+```
+
+资源会正常加载，但是汇报 Report-Only相关的错误提醒
+
+### 在 html 中使用 csp
+
+和在服务端使用效果相同，最好在服务端做。
+
+```html
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'; form-action 'self';">
+```
+
+report-uri 不允许在 html 的 meta 中使用，只能在服务端通过 head 进行设置。

@@ -101,7 +101,7 @@ module.exports = {
             ['', 'HTTP协议简介'],
             'HTTP协议基础及发展历史',
             'HTTP各种特性概览',
-            'Nginx代理以及面向未来的HTTP'
+            // 'Nginx代理以及面向未来的HTTP'
           ]
         }
       ],
