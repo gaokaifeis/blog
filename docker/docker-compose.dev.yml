@@ -9,4 +9,4 @@ services:
       dockerfile: Dockerfile.dev
     container_name: 'my-doc-dev'
     volumes:
-      - ../docks:/usr/src/app/docks
+      - ../docs:/usr/src/app/docs
