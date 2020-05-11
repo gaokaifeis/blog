@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  my-doc:
+    ports:
+      - 8000:8081
+    build:
+      context: ../
+      dockerfile: Dockerfile.dev
+    container_name: 'my-doc-dev'
+    volumes:
+      - ../docks:/usr/src/app/docks
