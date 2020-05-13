@@ -3,7 +3,7 @@ version: '3.5'
 services:
   my-doc:
     ports:
-      - 8000:8081
+      - 8000:8080
     build:
       context: ../
       dockerfile: Dockerfile.dev

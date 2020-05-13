@@ -6,7 +6,8 @@
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
     "deploy": "sh build.sh",
-    "docker:dev": "docker-compose -f ./docker/docker-compose.dev.yml up"
+    "docker:dev": "docker-compose -f ./docker/docker-compose.dev.yml up",
+    "docker:build": "docker-compose -f ./docker/docker-compose.yml up"
   },
   "author": "",
   "license": "ISC",
