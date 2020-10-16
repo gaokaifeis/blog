@@ -43,8 +43,8 @@ module.exports = {
         text: '基础',
         // link: '/nodejs/index/'
         items: [
-          { text: 'HTTP 协议', link: '/http/index/' },
-          // { text: 'mongoose', link: '/http/index/' }
+          { text: 'HTTP 协议', link: '/http/' },
+          // { text: 'mongoose', link: '/nodejs/mongoose/' }
         ]
       }
     ],
@@ -83,13 +83,13 @@ module.exports = {
       //     ]
       //   },
       // ],
-      '/nodejs/': [
+      '/nodejs/mongoose/': [
         {
           title: 'mongoose',
           collapsable: false,
           children: [
-            ['mongoose/', '简介'],
-            'mongoose/second'
+            ['', '简介'],
+            'second'
           ]
         }
       ],
@@ -99,8 +99,9 @@ module.exports = {
           collapsable: false,
           children: [
             ['', 'HTTP协议简介'],
-            'HTTP协议基础及发展历史',
-            'HTTP各种特性概览',
+            // ['HTTPMethod', 'HTTPMethod'],
+            ['HTTPdevhistory', 'HTTP协议基础及发展历史'],
+            ['HTTPFeatures', 'HTTP各种特性概览'],
             // 'Nginx代理以及面向未来的HTTP'
           ]
         }
