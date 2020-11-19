@@ -27,10 +27,10 @@ module.exports = {
       //   text: 'vue',
       //   link: '/vue/index/'
       // },
-      // {
-      //   text: 'react',
-      //   link: '/react/index/'
-      // },
+      {
+        text: 'react',
+        link: '/react/index/'
+      },
       // {
       //   text: 'python',
       //   link: '/python/index/'
@@ -58,15 +58,22 @@ module.exports = {
       //     ]
       //   },
       // ],
-      // '/react/': [
-      //   {
-      //     title: '初始化',
-      //     collapsable: false,
-      //     children: [
-      //       ['index/', '简介']
-      //     ]
-      //   },
-      // ],
+      '/react/': [
+        // {
+        //   title: '初始化',
+        //   collapsable: false,
+        //   children: [
+        //     ['index/', '简介']
+        //   ]
+        // },
+        {
+          title: '日常问题',
+          collapsable: false,
+          children: [
+            ['question/props_default_value', '善用props解构默认值']
+          ]
+        },
+      ],
       // '/python/': [
       //   {
       //     title: '基础学习',
