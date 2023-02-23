@@ -2,8 +2,11 @@ const path = require('path')
 console.log(path.join(__dirname, '../static/asserts'))
 module.exports = {
   base: '/blog/',
-  title: 'gaokf',
-  description: '记录开发中遇到的问题',
+  title: 'haha blog',
+  description: '哈哈的博客',
+  head: [
+    ['link', { rel: 'icon', href: '/logo.png' }]
+  ],
   serviceWorker: false,
   configureWebpack: {
     resolve: {
@@ -12,10 +15,6 @@ module.exports = {
       }
     }
   },
-  theme: 'reco',
-  head: [
-    ['link', { rel: 'icon', href: '/logo.png' }]
-  ],
   themeConfig: {
     repo: 'gaokaifeis/blog',
     editLinks: true,
@@ -23,6 +22,13 @@ module.exports = {
     editLinkText: '在 GitHub 上编辑此页',
     lastUpdated: '上次更新',
     nav: [
+      {
+        text: 'javascript',
+        items: [
+          { text: 'js', link: '/javascript/js/' },
+          // { text: 'mongoose', link: '/nodejs/mongoose/' }
+        ]
+      },
       // {
       //   text: 'vue',
       //   link: '/vue/index/'
@@ -49,6 +55,15 @@ module.exports = {
       }
     ],
     sidebar: {
+      '/javascript/js/': [
+        {
+          title: '深入理解',
+          collapsable: false,
+          children: [
+            ['Inheritanceandtheprototypechain', '继承与原型链']
+          ]
+        },
+      ],
       // '/vue/': [
       //   {
       //     title: '初始化',
